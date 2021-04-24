@@ -37,8 +37,24 @@ for i in range(1, 20):
         result = requests.get("http://jsjustweb.jihsun.com.tw/z/zg/zg_F_0_"+str(i)+".djhtm")
         total_array.append(cleaner(result))
 
+stonk_name_array = []
+stonk_name_array_2 = []
+stonk_name_array_3 = []
+stage = 1
+
 for data in total_array:
-    for layer2 in data:
-        print(layer2)
-    print("="*50)
+    for layer2 in data:  
+        if stage == 1:
+            stonk_name_array.append(layer2[0])
+        elif stage == 2 :
+            stonk_name_array_2.append(layer2[0])
+        elif stage == 3 :
+            stonk_name_array_3.append(layer2[0])
+    stage += 1
+    #print("="*75)
+
+result1 = list(set(stonk_name_array) & set(stonk_name_array_2))
+final = list(set(result1) & set(stonk_name_array_3))
+
+print(final)
         
