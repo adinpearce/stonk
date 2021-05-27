@@ -12,43 +12,64 @@ mydb = mysql.connector.connect(
 
 mycursor = mydb.cursor()
 
-sql = "SELECT high, low , close FROM `2330` WHERE 1"
+sql = "SELECT `open`, `close`, `high`, `low`, `k`, `d` FROM `2330` ORDER BY `date` DESC LIMIT 9"
 mycursor.execute(sql)
 myresult = mycursor.fetchall()
 
+open_list = []
 high_list = []
 low_list = []
 close_list = []
+k_list = []
+d_list = []
+total_array = []
 
 for element in myresult:
-    high_list.append(element[0])
-    low_list.append(element[1])
-    close_list.append(element[2])
+    open_list.append(element[0])
+    close_list.append(element[1])
+    high_list.append(element[2])
+    low_list.append(element[3])
+    k_list.append(element[4])
+    d_list.append(element[5])
 
 
-def list_type_changer(list):
+def data_reconfig(list, type):
     content_array = []
-    for data in list:
-        data = float(data)
-        content_array.append(data)
+    if type == "standard":
+        for data in list:
+            data = float(data)
+            content_array.append(data)
+            total_array.append(data)
+    elif type == "k" or type == "d":
+        for data in list:
+            if data == "":
+                pass
+            else:
+                data = float(data)
+                content_array.append(data)
 
     return content_array
 
 
-high_list = list_type_changer(high_list)
-low_list = list_type_changer(low_list)
-close_list = list_type_changer(close_list)
+open_array = data_reconfig(open_list, "standard")
+close_array = data_reconfig(close_list, "standard")
+high_array = data_reconfig(high_list, "standard")
+low_array = data_reconfig(low_list, "standard")
+k_array = data_reconfig(k_list, "k")
+d_array = data_reconfig(d_list, "d")
 
-high_array = np.asarray(high_list)
-low_array = np.asarray(low_list)
-close_array = np.asarray(close_list)
+biggest = max(total_array)
+smallest = min(total_array)
 
-k, d = talib.STOCH(high_array, low_array, close_array, fastk_period=5,
-                   slowk_period=3, slowk_matype=1, slowd_period=3, slowd_matype=1)
-#k, d = talib.STOCHF(high_array, low_array, close_array,fastk_period=9, fastd_period=3, fastd_matype=3)
+today_close = close_array[0]
 
-#print(k, d)
+rsv = round((today_close - smallest) / (biggest - smallest) * 100, 2)
 
-for element1 in k:
-    if element1 != "nan":
-        print(element1)
+yesterday_k = k_array[0]
+
+k = round((yesterday_k / 3 * 2) + (rsv / 3), 2)
+
+yesterday_d = d_array[0]
+
+d = round((k / 3)+(yesterday_d/3*2), 2)
+print(d)
