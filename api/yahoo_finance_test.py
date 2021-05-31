@@ -36,34 +36,22 @@ def retriver(stock_num, period1, period2, state):
     return response.text
 
 
+def json_extraction(json_data):
+    data = json.loads(json_data)
+
+    open = data['chart']['result'][0]['indicators']['quote'][0]['open']
+    close = data['chart']['result'][0]['indicators']['quote'][0]['close']
+    low = data['chart']['result'][0]['indicators']['quote'][0]['low']
+    high = data['chart']['result'][0]['indicators']['quote'][0]['high']
+    volume = data['chart']['result'][0]['indicators']['quote'][0]['volume']
+    return open, close, low, high, volume
+
+
 def data_cleaner(data):
     data = str(data).strip("[")
     data = data.strip("]")
 
     return data
-
-
-def json_extraction(json_data):
-    data = json.loads(json_data)
-
-    open = data_cleaner(
-        str(data['chart']['result'][0]['indicators']['quote'][0]['open']))
-    close = data_cleaner(
-        str(data['chart']['result'][0]['indicators']['quote'][0]['close']))
-    low = data_cleaner(
-        str(data['chart']['result'][0]['indicators']['quote'][0]['low']))
-    high = data_cleaner(
-        str(data['chart']['result'][0]['indicators']['quote'][0]['high']))
-    volume = data_cleaner(str(data['chart']['result'][0]
-                              ['indicators']['quote'][0]['volume']))
-
-    open = round(float(open), 2)
-    close = round(float(close), 2)
-    low = round(float(low), 2)
-    high = round(float(high), 2)
-    volume = round(float(volume), 2)
-
-    return open, close, low, high, volume
 
 
 def db_in(date, data, stonk_num):
