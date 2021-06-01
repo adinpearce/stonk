@@ -14,7 +14,7 @@ time_counter(a, b)
 '''
 
 
-def catcher(stonk_num):
+def catcher(stonk_num, today, tomorrow_c):
     now = datetime.datetime.now()
 
     today_date = str(now.strftime("%Y"))+"-" + \
@@ -27,14 +27,14 @@ def catcher(stonk_num):
         "%Y")) + "-"+str(tomorrow_transfer.strftime("%m"))+"-"+str(tomorrow_transfer.strftime("%d"))
 
     # 時間計算
-    start_date = api.time_counter("1970-01-01", "2021-04-28")
-    end_date = api.time_counter("1970-01-01", "2021-04-29")
+    start_date = api.time_counter("1970-01-01", str(today))
+    end_date = api.time_counter("1970-01-01", str(tomorrow_c))
     # 股價抓取
     data = api.json_extraction(api.retriver(
         stonk_num, start_date, end_date, 0))
     # 上傳資料庫
-    status = api.db_in("2021-04-28", data, str(stonk_num))
+    status = api.db_in(str(today), data, str(stonk_num))
     return status
 
 
-print(catcher(2330))
+#print(catcher(2302, "2021-05-27", "2021-05-28"))

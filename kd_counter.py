@@ -72,4 +72,4 @@ k = round((yesterday_k / 3 * 2) + (rsv / 3), 2)
 yesterday_d = d_array[0]
 
 d = round((k / 3)+(yesterday_d/3*2), 2)
-print(d)
+print(k, d)

@@ -37,4 +37,4 @@ def catcher(stonk_num):
     return status
 
 
-print(catcher(2330))
+print(catcher(2302))
