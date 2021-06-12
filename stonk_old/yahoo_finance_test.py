@@ -2,7 +2,6 @@ import datetime
 from os import close
 import requests
 import json
-import jsonpath
 import mysql.connector
 
 now = datetime.datetime.now()

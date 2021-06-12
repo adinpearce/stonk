@@ -86,9 +86,7 @@ def kd_counter(stonk_num, db):
 
     try:
         if db == "yes":
-            sql_update = "UPDATE `" + \
-                str(stonk_num)+"` SET `k` = '"+str(k) + \
-                "', `d`='"+str(d)+"' WHERE `date` = '"+today_date+"'"
+            sql_update = "UPDATE `" + str(stonk_num)+"` SET `k` = '"+str(k) + "', `d`='"+str(d)+"' WHERE `date` = '"+today_date+"'"
 
             mycursor.execute(sql_update)
 
@@ -101,4 +99,4 @@ def kd_counter(stonk_num, db):
     return rsv, k, d
 
 
-#print(kd_counter(2329, "yes"))
+print(kd_counter(2330, "yes"))

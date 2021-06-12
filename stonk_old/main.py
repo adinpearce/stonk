@@ -27,8 +27,12 @@ def catcher(stonk_num):
         "%Y")) + "-"+str(tomorrow_transfer.strftime("%m"))+"-"+str(tomorrow_transfer.strftime("%d"))
 
     # 時間計算
+    '''
     start_date = api.time_counter("1970-01-01", today_date)
     end_date = api.time_counter("1970-01-01", tomorrow_transfer_2)
+    '''
+    start_date = api.time_counter("1970-01-01", str(today_date))
+    end_date = api.time_counter("1970-01-01", str(tomorrow_transfer_2))
     # 股價抓取
     data = api.json_extraction(api.retriver(
         stonk_num, start_date, end_date, 0))
@@ -37,4 +41,4 @@ def catcher(stonk_num):
     return status
 
 
-print(catcher(2302))
+#print(catcher(2302))

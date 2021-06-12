@@ -1,5 +1,6 @@
 import yahoo_finance_test as api
 import datetime
+import time
 
 '''
 當日股價:
@@ -36,5 +37,10 @@ def catcher(stonk_num, today, tomorrow_c):
     status = api.db_in(str(today), data, str(stonk_num))
     return status
 
+stonk_list = [6756, 8016, 8028, 8081, 8110, 8131, 8150, 8261, 8271]
 
-#print(catcher(2302, "2021-05-27", "2021-05-28"))
+#stonk_list = [6243, 6257, 6271, 6415, 6451, 6515, 6525, 6531, 6533, 6552, 6573, 6756, 8016, 8028, 8081, 8110, 8131, 8150, 8261, 8271]
+
+for data in stonk_list:
+    print(catcher(data, "2021-06-04", "2021-06-05"))
+    time.sleep(2)
