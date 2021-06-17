@@ -85,8 +85,8 @@ def db_in(date, data, stonk_num):
     try:
         sql = "INSERT INTO `" + \
             str(stonk_num) + \
-            "`(`date`, `open`, `close`, `high`, `low`, `volume`, `k`, `d`) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
-        val = date, open, close, high, low, volume, "", ""
+            "`(`date`, `open`, `close`, `high`, `low`,`avg_price`, `volume`, `k`, `d`) VALUES (%s,%s, %s, %s, %s, %s, %s, %s, %s)"
+        val = date, open, close, high, low,"", volume, "", ""
         mycursor.execute(sql, val)
         mydb.commit()
         return "success"
