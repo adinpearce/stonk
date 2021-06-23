@@ -1,60 +1,15 @@
-from bs4 import BeautifulSoup
-from bs4.element import ResultSet
-import requests
-
-total_array = []
-
-def cleaner(result):
-    soup = BeautifulSoup(result.text, 'html.parser')
-
-    stock_full = soup.find('table', attrs={'class', 't01'})
-    full_array = []
-    clean_array_full = []
-
-    stock_1 = stock_full.find_all('tr')
-    del stock_1[0:2]
-
-    for data in stock_1:
-        data1 = data.find_all('td')
-        del data1[0]
-        partial_array = []
-        for all in data1:
-            partial_array.append(all.text)
-        full_array.append(partial_array)
-
-    for data in full_array:
-        clean_array = []
-        for partial in data:
-            out = "".join(partial.split())
-            clean_array.append(out)
-        clean_array_full.append(clean_array)
+import datetime
 
 
-    return clean_array_full
+#datetime_initialize
+now = datetime.datetime.now()
+today_date = str(now.strftime("%Y"))+"-" + str(now.strftime("%m"))+"-"+str(now.strftime("%d"))
 
-for i in range(1, 20):
-    if (i == 1 or i ==5 or i == 10):
-        result = requests.get("http://jsjustweb.jihsun.com.tw/z/zg/zg_F_0_"+str(i)+".djhtm")
-        total_array.append(cleaner(result))
+today_date_datetime = datetime.datetime.strptime(today_date, "%Y-%m-%d")
 
-stonk_name_array = []
-stonk_name_array_2 = []
-stonk_name_array_3 = []
-stage = 1
 
-for data in total_array:
-    for layer2 in data:  
-        if stage == 1:
-            stonk_name_array.append(layer2[0])
-        elif stage == 2 :
-            stonk_name_array_2.append(layer2[0])
-        elif stage == 3 :
-            stonk_name_array_3.append(layer2[0])
-    stage += 1
-    #print("="*75)
+est_date = "2021-06-10"
+est_date_datetime = datetime.datetime.strptime(est_date, "%Y-%m-%d")
 
-result1 = list(set(stonk_name_array) & set(stonk_name_array_2))
-final = list(set(result1) & set(stonk_name_array_3))
-
-print(final)
-        
+conflict_time = today_date_datetime - est_date_datetime
+print ((str(conflict_time).split(" days, 0:00:00"))[0])

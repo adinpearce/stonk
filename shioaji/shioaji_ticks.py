@@ -42,15 +42,7 @@ for data in stonk_list:
     close_price = snapshots[0]['close']
     avg_price = snapshots[0]['average_price']
     total_volume = snapshots[0]['total_volume']
-    '''
-    print("high: " + str(high))
-    print("low: " + str(low))
-    print("open_prices: " + str(open_price))
-    print("close: " +str(close_price))
-    print("avg_prices: " +str(avg_price))
-    print("total_volume: " + str(total_volume))
-    print("fetch success" + "="*50)
-    '''
+
     try:
         sql = "INSERT INTO `" + str(stonk_code) + "`(`date`, `open`, `close`, `high`, `low`, `avg_price`, `volume`, `k`, `d`) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
         val = today_date, open_price, close_price, high, low, avg_price, total_volume, "", ""
