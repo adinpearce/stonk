@@ -1,4 +1,5 @@
 import fetcher
+import percentage_updater
 import datetime
 import sql_insert
 import time
@@ -8,7 +9,7 @@ now = datetime.datetime.now()
 time_combination = str(now.strftime("%Y"))+"-" + \
     str(now.strftime("%m"))+"-"+str(now.strftime("%d"))
 
-#凱基(隔日沖)(隔日跌)--------------------------------------------------------------------------------------------------------
+#凱基(隔日沖)(隔日跌)(分點代號:9268)--------------------------------------------------------------------------------------------------------
 #凱基-台北-金額
 url_KGI_taipei_money = "http://jsjustweb.jihsun.com.tw/z/zg/zgb/zgb0.djhtm?a=9200&b=9268&c=B&d=1;KGI_taipei"
 #凱基-台北-張數
@@ -39,14 +40,14 @@ url_Lynch_ticket = "http://jsjustweb.jihsun.com.tw/z/zg/zgb/zgb0.djhtm?a=1440&b=
 fetch_array_money = [url_KGI_taipei_money, url_yuanta_tucheng_money, url_fubon_jiangguo_money, url_fubon_chiayi_money, url_Lynch_money]
 fetch_array_ticket = [url_KGI_taipei_ticket, url_yuanta_tucheng_ticket, url_fubon_jiangguo_ticket, url_fubon_chiayi_ticket, url_Lynch_ticket]
 
-for item_money in fetch_array_ticket:
+for item_money in fetch_array_money:
     time.sleep(1)
     data_seperator = item_money.split(';')
-    data = fetcher.fetcher('linux', data_seperator[0])
+    data = fetcher.fetcher('windows', data_seperator[0])
     sql_insert.insert_command(data, data_seperator[1], 'money')
 
-for item_ticket in fetch_array_money:
+for item_ticket in fetch_array_ticket:
     time.sleep(1)
     data_seperator = item_ticket.split(';')
-    data = fetcher.fetcher('linux', data_seperator[0])
+    data = fetcher.fetcher('windows', data_seperator[0])
     sql_insert.insert_command(data, data_seperator[1], 'ticket')

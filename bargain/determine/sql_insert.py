@@ -37,11 +37,11 @@ def insert_command(data, operator, type): #data="資料", operator="操作券商
         total_amount = combine(data[3])
 
         if type == "money":
-            sql = "INSERT INTO `semi_bargain_money_determine`(`date`, `stock_name`, `buy_amount`, `sell_amount`, `total_amount`, `operator`) VALUES (%s, %s, %s, %s, %s, %s)"
+            sql = "INSERT INTO `bargain_money_data`(`date`, `stock_name`, `buy_amount`, `sell_amount`, `total_amount`, `operator`, `daily_rank`) VALUES (%s, %s, %s, %s, %s, %s, %s)"
         elif type == "ticket":
-            sql = "INSERT INTO `semi_bargain_ticket_determine`(`date`, `stock_name`, `buy_amount`, `sell_amount`, `total_amount`, `operator`) VALUES (%s, %s, %s, %s, %s, %s)"
+            sql = "INSERT INTO `bargain_ticket_data`(`date`, `stock_name`, `buy_amount`, `sell_amount`, `total_amount`, `operator`, `daily_rank`) VALUES (%s, %s, %s, %s, %s, %s, %s)"
         
-        val = time_combination, stock_name, buy_amount, sell_amount, total_amount, operator
+        val = time_combination, stock_name, buy_amount, sell_amount, total_amount, operator, i
 
         mycursor.execute(sql, val)
         mydb.commit()
