@@ -26,7 +26,7 @@ mydb = mysql.connector.connect(
 
 mycursor = mydb.cursor()
 
-def percentage_updater(OS, url):
+def percentage_updater(OS, url, operator):
     if OS == "linux":
         chrome_options = Options()
         chrome_options.add_argument('--no-sandbox')
@@ -37,38 +37,44 @@ def percentage_updater(OS, url):
     elif OS == "windows":
         browser = webdriver.Chrome(executable_path='C:/Users/retr0/Desktop/chromedriver')
 
-    browser.get("https://histock.tw/")
-
-    browser.find_element(By.ID, "login").click()
-    browser.find_element(By.ID, "email").click()
-    browser.find_element(By.ID, "email").send_keys("jona9639@gmail.com")
-    time.sleep(1)
-    browser.find_element(By.ID, "password").click()
-    browser.find_element(By.ID, "password").send_keys("jona789521456")
-    time.sleep(1)
-    browser.find_element(By.ID, "bLogin").click()
-
     browser.get(url)
+
     time.sleep(1)
     url_content = browser.page_source
 
     soup = BeautifulSoup(url_content, "html.parser")
 
-    first_anchor = soup.find_all(class_='alt-row')
+    if operator == "KGI_taipei":
+        operator_name = '凱基-台北'
+    elif operator == "yuanta_tucheng":
+        operator_name = '元大-土城永寧'
+    elif operator == "fubon_jiangguo":
+        operator_name = '富邦-建國'
+    elif operator == "fubon_chiayi":
+        operator_name = '富邦-嘉義'
+    elif operator == "lynch":
+        operator_name = '美林'
 
-    total_data = first_anchor[0]
-    second_anchor = total_data.find_all('td')
+    try:
+        operator = soup.find_all(text=re.compile(operator_name))
+        
+        target = operator[0].parent.parent.parent
 
-    percentage = second_anchor[8].text
+        target_2 = target.find_all('td')
 
-    percentage = percentage.split('%')
+        percentage = target_2[4].text
 
-    new_percentage = float(percentage[0])
+        percentage = percentage.split('%')
+
+        new_percentage = float(percentage[0])
+    except:
+        new_percentage = 0
 
     browser.close()
-
     return new_percentage
-    
+
+
+
 def main_host(date, type):
     if type == "ticket":
         fetch = "SELECT * FROM `bargain_ticket_data` WHERE `date` = '"+str(date)+"'"
@@ -81,33 +87,34 @@ def main_host(date, type):
     regex00 = re.compile(r"\d+")
 
     for amount in myresult:
+        time.sleep(1)
         org_stock_name = str(amount[2])
         operator = str(amount[6])
-        operator_num = 0
+
+        print("正在蒐集"+str(operator)+"對"+str(org_stock_name))
+        
         match = regex00.search(org_stock_name)
 
         stock_num = match.group(0)
 
-        if operator == "KGI_taipei":
-            operator_num = 9268
-        elif operator == "yuanta_tucheng":
-            operator_num = 9875
-        elif operator == "fubon_jiangguo":
-            operator_num = 9658
-        elif operator == "fubon_chiayi":
-            operator_num = 9692
-        elif operator == "lynch":
-            operator_num = 1440
+        url_generate = "http://jsjustweb.jihsun.com.tw/z/zc/zco/zco.djhtm?a="+stock_num
 
-        url_generate = "https://histock.tw/stock/brokertrace.aspx?bno="+str(operator_num)+"&no="+str(stock_num)
+        percentage = percentage_updater('linux', url_generate, operator)
 
-        percentage = percentage_updater('linux', url_generate)
+        print("比率="+str(percentage)+"%")
 
-        update_sql = "UPDATE `bargain_ticket_data` SET `percentage` = '"+str(percentage)+"' WHERE `date` = '" + date + "' AND `stock_name` = '" + org_stock_name +"' AND `operator` = '"+str(operator)+"'"
+        if type == "ticket":
+            update_sql = "UPDATE `bargain_ticket_data` SET `percentage` = '"+str(percentage)+"' WHERE `date` = '" + date + "' AND `stock_name` = '" + org_stock_name +"' AND `operator` = '"+str(operator)+"'"
+            print("已完成更新bargain_ticket_data")
+        elif type == "money":
+            update_sql = "UPDATE `bargain_money_data` SET `percentage` = '"+str(percentage)+"' WHERE `date` = '" + date + "' AND `stock_name` = '" + org_stock_name +"' AND `operator` = '"+str(operator)+"'"
+            print("已完成更新bargain_money_data")
 
         mycursor.execute(update_sql)
 
         mydb.commit()
+
+        print("="*75)
 
 main_host(time_combination, 'money')
 main_host(time_combination, 'ticket')
