@@ -1,5 +1,7 @@
 import mysql.connector
 import datetime
+import KGI_taipei_determine as KGI_determine
+#import Lynch_determine 
 
 now = datetime.datetime.now()
 
@@ -29,44 +31,26 @@ Date_M4 = str(D_M4.strftime("%Y")) + "-"+str(D_M4.strftime("%m"))+"-"+str(D_M4.s
 
 query_date = "`date` = '"+time_combination+"' OR `date` = '"+Date_M1+"' OR `date` = '"+Date_M2+"' OR `date` = '"+Date_M3+"' OR `date` = '"+Date_M4+"'"
 
-def determine(operator, date, query_date):
-    sql = "SELECT * FROM `bargain_ticket_data` WHERE `operator` = '"+str(operator)+"' AND `date` = '"+str(date)+"'"
+def determine(operator, date, query_date, type):
+    if type == "ticket":
+        sql = "SELECT * FROM `bargain_ticket_data` WHERE `operator` = '"+str(operator)+"' AND `date` = '"+str(date)+"'"
+        #sql = "SELECT * FROM `bargain_ticket_data` WHERE `operator` = '"+str(operator)+"' AND `date` = '2021-07-21'"
+    elif type == "money":
+        sql = "SELECT * FROM `bargain_money_data` WHERE `operator` = '"+str(operator)+"' AND `date` = '"+str(date)+"'"
+        #sql = "SELECT * FROM `bargain_money_data` WHERE `operator` = '"+str(operator)+"' AND `date` = '2021-07-21'"
+        
     mycursor.execute(sql)
 
     myresult = mycursor.fetchall()
-
-    for amount in myresult:
-        amount_array = [0, 0, 0, 0, 0]
-        amount_num = 0
-        if operator == "KGI_taipei":
-            fetch_sql = "SELECT * FROM `bargain_ticket_data` WHERE `stock_name` = '"+str(amount[2])+"' AND `operator` = '"+str(operator)+"' AND ("+query_date+") ORDER BY `date` ASC"
-            mycursor.execute(fetch_sql)
-
-            myresult_fetch = mycursor.fetchall()
-
-            for detail in myresult_fetch:
-                amount_transaction = int(detail[5])
-                if detail[1] == time_combination:
-                    amount_array[0] = amount_transaction
-                elif detail[1] == Date_M1:
-                    amount_array[1] = amount_transaction
-                elif detail[1] == Date_M2:
-                    amount_array[2] = amount_transaction
-                elif detail[1] == Date_M3:
-                    amount_array[3] = amount_transaction
-                elif detail[1] == Date_M4:
-                    amount_array[4] = amount_transaction
-                amount_num += amount_transaction
-
-            try:
-                print(str(amount[2])+"==>連買"+str(amount_array.index(0)))
-            except:
-                print(str(amount[2])+"==>連買5, " +str(amount_num))
-
-            if amount[-1] < 6:
-                print(str(amount[2])+"==>放空")
-            
+    
+    
+    stock_name = myresult[0][2]
+    if operator == "KGI_taipei":
+        KGI_determine.KGI_taipei_module(type)
+    elif operator == "lynch":
+        pass
 
 
 
-determine("KGI_taipei", time_combination, query_date)
+determine("KGI_taipei", time_combination, query_date, 'ticket')
+determine("KGI_taipei", time_combination, query_date, 'money')

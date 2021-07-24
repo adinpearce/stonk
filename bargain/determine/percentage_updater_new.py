@@ -56,9 +56,12 @@ def percentage_updater(OS, url, operator):
         operator_name = '美林'
 
     try:
-        operator = soup.find_all(text=re.compile(operator_name))
+        operator_OTG = soup.find_all(text=re.compile(operator_name))
         
-        target = operator[0].parent.parent.parent
+        if operator_name == "美林":
+            target = operator_OTG[1].parent.parent.parent
+        else:
+            target = operator_OTG[0].parent.parent.parent
 
         target_2 = target.find_all('td')
 
@@ -86,6 +89,7 @@ def main_host(date, type):
 
     regex00 = re.compile(r"\d+")
 
+
     for amount in myresult:
         time.sleep(1)
         org_stock_name = str(amount[2])
@@ -95,26 +99,31 @@ def main_host(date, type):
         
         match = regex00.search(org_stock_name)
 
-        stock_num = match.group(0)
+        try:
+            stock_num = match.group(0)
 
-        url_generate = "http://jsjustweb.jihsun.com.tw/z/zc/zco/zco.djhtm?a="+stock_num
+            url_generate = "http://jsjustweb.jihsun.com.tw/z/zc/zco/zco.djhtm?a="+stock_num
 
-        percentage = percentage_updater('linux', url_generate, operator)
+            percentage = percentage_updater('windows', url_generate, operator)
 
-        print("比率="+str(percentage)+"%")
+            print("比率="+str(percentage)+"%")
 
-        if type == "ticket":
-            update_sql = "UPDATE `bargain_ticket_data` SET `percentage` = '"+str(percentage)+"' WHERE `date` = '" + date + "' AND `stock_name` = '" + org_stock_name +"' AND `operator` = '"+str(operator)+"'"
-            print("已完成更新bargain_ticket_data")
-        elif type == "money":
-            update_sql = "UPDATE `bargain_money_data` SET `percentage` = '"+str(percentage)+"' WHERE `date` = '" + date + "' AND `stock_name` = '" + org_stock_name +"' AND `operator` = '"+str(operator)+"'"
-            print("已完成更新bargain_money_data")
+            if type == "ticket":
+                update_sql = "UPDATE `bargain_ticket_data` SET `percentage` = '"+str(percentage)+"' WHERE `date` = '" + date + "' AND `stock_name` = '" + org_stock_name +"' AND `operator` = '"+str(operator)+"'"
+                print("已完成更新bargain_ticket_data")
+            elif type == "money":
+                update_sql = "UPDATE `bargain_money_data` SET `percentage` = '"+str(percentage)+"' WHERE `date` = '" + date + "' AND `stock_name` = '" + org_stock_name +"' AND `operator` = '"+str(operator)+"'"
+                print("已完成更新bargain_money_data")
 
-        mycursor.execute(update_sql)
+            mycursor.execute(update_sql)
 
-        mydb.commit()
+            mydb.commit()
 
-        print("="*75)
+            print("="*75)
+        except Exception as error:
+            print(error)
+            continue
+
 
 main_host(time_combination, 'money')
 main_host(time_combination, 'ticket')

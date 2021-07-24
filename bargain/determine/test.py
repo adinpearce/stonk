@@ -1,8 +1,19 @@
 import fetcher
-import percentage_updater_new
 import datetime
 import sql_insert
+import mysql.connector
 import time
+
+
+mydb = mysql.connector.connect(
+    host="220.135.176.190",
+    user="k20",
+    password="jona789521456",
+    database="stonk",
+    auth_plugin="mysql_native_password"
+)
+
+mycursor = mydb.cursor()
 
 now = datetime.datetime.now()
 
@@ -31,11 +42,17 @@ url_fubon_chiayi_money = "http://jsjustweb.jihsun.com.tw/z/zg/zgb/zgb0.djhtm?a=9
 #富邦-嘉義-張數
 url_fubon_chiayi_ticket = "http://jsjustweb.jihsun.com.tw/z/zg/zgb/zgb0.djhtm?a=9600&b=9692&c=E&d=1;fubon_chiayi"
 
-#美林(連買2日)----------------------------------------------------------------------------------------------------------------
+#美林(連買2日且第二日為漲)----------------------------------------------------------------------------------------------------------------
 #美林-金額(分點代號:1440)
 url_Lynch_money = "http://jsjustweb.jihsun.com.tw/z/zg/zgb/zgb0.djhtm?a=1440&b=1440;lynch"
 #美林-張數
 url_Lynch_ticket = "http://jsjustweb.jihsun.com.tw/z/zg/zgb/zgb0.djhtm?a=1440&b=1440&c=E&d=1;lynch"
+
+sql = "INSERT INTO `stock_day`(`date`) VALUES ('"+str(time_combination)+"')"
+#val = str(time_combination)
+
+mycursor.execute(sql)
+mydb.commit()
 
 fetch_array_money = [url_KGI_taipei_money, url_yuanta_tucheng_money, url_fubon_jiangguo_money, url_fubon_chiayi_money, url_Lynch_money]
 fetch_array_ticket = [url_KGI_taipei_ticket, url_yuanta_tucheng_ticket, url_fubon_jiangguo_ticket, url_fubon_chiayi_ticket, url_Lynch_ticket]

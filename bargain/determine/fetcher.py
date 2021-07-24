@@ -39,4 +39,6 @@ def fetcher(OS, url):
         if item != "":
             new_array.append(item)
 
+    browser.close()
+
     return new_array[5:]

@@ -21,7 +21,11 @@ def combine(pr_data):
     new_data = ""
     pr_data = list(pr_data)
     try:
-        pr_data.remove(",")
+        for i in range(0, len(pr_data)):
+            try:
+                pr_data.remove(',')
+            except:
+                pass
         new_data = int(new_data.join(pr_data))
     except:
         new_data = int(new_data.join(pr_data))
@@ -37,11 +41,11 @@ def insert_command(data, operator, type): #data="資料", operator="操作券商
         total_amount = combine(data[3])
 
         if type == "money":
-            sql = "INSERT INTO `bargain_money_data`(`date`, `stock_name`, `buy_amount`, `sell_amount`, `total_amount`, `operator`, `daily_rank`) VALUES (%s, %s, %s, %s, %s, %s, %s)"
+            sql = "INSERT INTO `bargain_money_data`(`date`, `stock_name`, `buy_amount`, `sell_amount`, `total_amount`, `operator`, `percentage`, `daily_rank`) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
         elif type == "ticket":
-            sql = "INSERT INTO `bargain_ticket_data`(`date`, `stock_name`, `buy_amount`, `sell_amount`, `total_amount`, `operator`, `daily_rank`) VALUES (%s, %s, %s, %s, %s, %s, %s)"
+            sql = "INSERT INTO `bargain_ticket_data`(`date`, `stock_name`, `buy_amount`, `sell_amount`, `total_amount`, `operator`, `percentage`, `daily_rank`) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
         
-        val = time_combination, stock_name, buy_amount, sell_amount, total_amount, operator, i
+        val = time_combination, stock_name, buy_amount, sell_amount, total_amount, operator, 0,i
 
         mycursor.execute(sql, val)
         mydb.commit()
