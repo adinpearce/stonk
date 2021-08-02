@@ -56,11 +56,12 @@ def KGI_taipei_module(type):
     absolute_array = []
     possible_result_array = []
     buy_in_status = []
+    forbidden_array = ["元大台灣50"]
     if type == "ticket":
-        #fetch_sql = "SELECT * FROM `bargain_ticket_data` WHERE  `operator` = 'KGI_taipei' AND `date` = '2021-07-23' ORDER BY `date` ASC"
+        #fetch_sql = "SELECT * FROM `bargain_ticket_data` WHERE  `operator` = 'KGI_taipei' AND `date` = '2021-07-30' ORDER BY `date` ASC"
         fetch_sql = "SELECT * FROM `bargain_ticket_data` WHERE  `operator` = 'KGI_taipei' AND `date` = '"+time_combination+"' ORDER BY `date` ASC"
     elif type == "money":
-        #fetch_sql = "SELECT * FROM `bargain_money_data` WHERE `operator` = 'KGI_taipei' AND `date` = '2021-07-23' ORDER BY `date` ASC"
+        #fetch_sql = "SELECT * FROM `bargain_money_data` WHERE `operator` = 'KGI_taipei' AND `date` = '2021-07-30' ORDER BY `date` ASC"
         fetch_sql = "SELECT * FROM `bargain_money_data` WHERE `operator` = 'KGI_taipei' AND `date` = '"+time_combination+"' ORDER BY `date` ASC"
 
     mycursor.execute(fetch_sql)
@@ -71,32 +72,35 @@ def KGI_taipei_module(type):
         stock_name = item[2]
         percentage = float(item[-2])
 
-        if percentage > 5:
+        if percentage > 11:
             possible_result_array.append(stock_name)
 
 
     for item_2 in possible_result_array:
-        if type == "money":
-            new_fetch_sql = "SELECT * FROM `bargain_ticket_data` WHERE `stock_name` = '"+item_2+"' AND `operator` = 'KGI_taipei' AND `date` = '"+time_combination+"'"
-            #new_fetch_sql = "SELECT * FROM `bargain_ticket_data` WHERE `stock_name` = '"+item_2+"' AND `operator` = 'KGI_taipei' AND `date` = '2021-07-23'"
-        elif type == "ticket":
-            new_fetch_sql = "SELECT * FROM `bargain_money_data` WHERE `stock_name` = '"+item_2+"' AND  `operator` = 'KGI_taipei' AND `date` = '"+time_combination+"'"
-            #new_fetch_sql = "SELECT * FROM `bargain_money_data` WHERE `stock_name` = '"+item_2+"' AND  `operator` = 'KGI_taipei' AND `date` = '2021-07-23'"
+        if item_2 in forbidden_array:
+            pass
+        else:
+            if type == "money":
+                new_fetch_sql = "SELECT * FROM `bargain_ticket_data` WHERE `stock_name` = '"+item_2+"' AND `operator` = 'KGI_taipei' AND `date` = '"+time_combination+"'"
+                #new_fetch_sql = "SELECT * FROM `bargain_ticket_data` WHERE `stock_name` = '"+item_2+"' AND `operator` = 'KGI_taipei' AND `date` = '2021-07-30'"
+            elif type == "ticket":
+                new_fetch_sql = "SELECT * FROM `bargain_money_data` WHERE `stock_name` = '"+item_2+"' AND  `operator` = 'KGI_taipei' AND `date` = '"+time_combination+"'"
+                #new_fetch_sql = "SELECT * FROM `bargain_money_data` WHERE `stock_name` = '"+item_2+"' AND  `operator` = 'KGI_taipei' AND `date` = '2021-07-30'"
 
-        mycursor.execute(new_fetch_sql)
+            mycursor.execute(new_fetch_sql)
 
-        new_fetch_data = mycursor.fetchall()
+            new_fetch_data = mycursor.fetchall()
 
-        regex00 = re.compile(r"\d+")
-        match = regex00.search(item_2)
-        stock_num = match.group(0)
+            regex00 = re.compile(r"\d+")
+            match = regex00.search(item_2)
+            stock_num = match.group(0)
 
-        if len(new_fetch_data) != 0:
-            stock_price = fetcher(stock_num)
-            print(stock_price)
-            if float(stock_price) < 150 :
-                absolute_array.append(item_2)
-            #possible_result_array.remove(item_2)
+            if len(new_fetch_data) != 0:
+                stock_price = fetcher(stock_num)
+                print(stock_price)
+                if float(stock_price) < 150 :
+                    absolute_array.append(item_2)
+                #possible_result_array.remove(item_2)
 
     print(possible_result_array)
     print(absolute_array)

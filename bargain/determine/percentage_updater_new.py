@@ -65,11 +65,14 @@ def percentage_updater(OS, url, operator):
 
         target_2 = target.find_all('td')
 
-        percentage = target_2[4].text
+        if target_2[5].text == operator_name:
+            new_percentage = 0
+        else:
+            percentage = target_2[4].text
 
-        percentage = percentage.split('%')
+            percentage = percentage.split('%')
 
-        new_percentage = float(percentage[0])
+            new_percentage = float(percentage[0])
     except:
         new_percentage = 0
 
