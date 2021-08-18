@@ -1,0 +1,13 @@
+mysql
+
+
+7/5-7/11 server init(include db)
+7/12-7/25 basic service func(not include LIFF)
+7/26-8/8 LIFF complete
+8/9-8/15 basic instruction setting
+8/16-8/29 test
+
+1.好的主持人(節奏調整)
+    ==>主持能力強
+2.
+
