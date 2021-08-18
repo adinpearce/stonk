@@ -51,10 +51,10 @@ def KGI_taipei_module(type):
     possible_result_array = []
     forbidden_array = ["元大台灣50"]
     if type == "ticket":
-        #fetch_sql = "SELECT * FROM `bargain_ticket_data` WHERE  `operator` = 'KGI_taipei' AND `date` = '2021-07-30' ORDER BY `date` ASC"
+        #fetch_sql = "SELECT * FROM `bargain_ticket_data` WHERE  `operator` = 'KGI_taipei' AND `date` = '2021-08-13' ORDER BY `date` ASC"
         fetch_sql = "SELECT * FROM `bargain_ticket_data` WHERE  `operator` = 'KGI_taipei' AND `date` = '"+time_combination+"' ORDER BY `date` ASC"
     elif type == "money":
-        #fetch_sql = "SELECT * FROM `bargain_money_data` WHERE `operator` = 'KGI_taipei' AND `date` = '2021-07-30' ORDER BY `date` ASC"
+        #fetch_sql = "SELECT * FROM `bargain_money_data` WHERE `operator` = 'KGI_taipei' AND `date` = '2021-08-13' ORDER BY `date` ASC"
         fetch_sql = "SELECT * FROM `bargain_money_data` WHERE `operator` = 'KGI_taipei' AND `date` = '"+time_combination+"' ORDER BY `date` ASC"
 
     mycursor.execute(fetch_sql)
@@ -65,7 +65,7 @@ def KGI_taipei_module(type):
         stock_name = item[2]
         percentage = float(item[-2])
 
-        if percentage > 11:
+        if percentage > 10:
             possible_result_array.append(stock_name)
 
 
@@ -75,10 +75,10 @@ def KGI_taipei_module(type):
         else:
             if type == "money":
                 new_fetch_sql = "SELECT * FROM `bargain_ticket_data` WHERE `stock_name` = '"+item_2+"' AND `operator` = 'KGI_taipei' AND `date` = '"+time_combination+"'"
-                #new_fetch_sql = "SELECT * FROM `bargain_ticket_data` WHERE `stock_name` = '"+item_2+"' AND `operator` = 'KGI_taipei' AND `date` = '2021-07-30'"
+                #new_fetch_sql = "SELECT * FROM `bargain_ticket_data` WHERE `stock_name` = '"+item_2+"' AND `operator` = 'KGI_taipei' AND `date` = '2021-08-13'"
             elif type == "ticket":
                 new_fetch_sql = "SELECT * FROM `bargain_money_data` WHERE `stock_name` = '"+item_2+"' AND  `operator` = 'KGI_taipei' AND `date` = '"+time_combination+"'"
-                #new_fetch_sql = "SELECT * FROM `bargain_money_data` WHERE `stock_name` = '"+item_2+"' AND  `operator` = 'KGI_taipei' AND `date` = '2021-07-30'"
+                #new_fetch_sql = "SELECT * FROM `bargain_money_data` WHERE `stock_name` = '"+item_2+"' AND  `operator` = 'KGI_taipei' AND `date` = '2021-08-13'"
 
             mycursor.execute(new_fetch_sql)
 
@@ -92,7 +92,10 @@ def KGI_taipei_module(type):
                 stock_price = fetcher(stock_num)
                 print(stock_price)
                 if float(stock_price) < 150 :
-                    absolute_array.append(item_2)
+                    if len(stock_num) >= 5:
+                        pass
+                    else:
+                        absolute_array.append(item_2)
 
     print(possible_result_array)
     print(absolute_array)
@@ -119,6 +122,21 @@ def KGI_taipei_module(type):
         mycursor.execute(sql_update)
 
         mydb.commit()
+
+    for item in absolute_array:
+        sql_select = "SELECT * FROM `bargain_daily_operation_temp` WHERE `stock_num` = '"+str(item)+"'"
+
+        mycursor.execute(sql_select)
+
+        selected_data = mycursor.fetchall()
+
+        if len(selected_data) == 0:
+            sql_insert = "INSERT INTO `bargain_daily_operation_temp`(`stock_num`, `opertaor`, `last_tick_price`, `trigger_high_price`, `trigger_low_price`, `status`) VALUES ('"+str(item)+"','KGI_taipei',0,0,0,'')"
+
+            mycursor.execute(sql_insert)
+            mydb.commit()
+    
+
 
 KGI_taipei_module('ticket')
 KGI_taipei_module('money')
