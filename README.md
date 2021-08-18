@@ -7,7 +7,7 @@
 Folder Usage:
 
 1.交易準則==>各式可能有用的資訊\
-2.bargain==>籌碼追蹤程式\n
+2.bargain==>籌碼追蹤程式\
   backtrack==>回測\n
   determine==>判斷及資訊蒐集\n
   monitor==>追蹤\n
